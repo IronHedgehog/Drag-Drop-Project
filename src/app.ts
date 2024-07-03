@@ -1,3 +1,18 @@
+// autoBind decorator
+
+function autoBind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const methodUpdate: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const bindFN = originalMethod.bind(this);
+      return bindFN;
+    },
+  };
+  return methodUpdate;
+}
+
+// class ProjectInput
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -39,13 +54,33 @@ class ProjectInput {
     this.attach();
   }
 
+  private userInputValues(): [string, string, number] | void {
+    const titleInputValue = this.titleInputElement.value;
+    const descriptionInputValue = this.descriptionInputElement.value;
+    const peopleInputValue = this.peopleInputElement.value;
+
+    if (
+      titleInputValue.trim().length === 0 ||
+      descriptionInputValue.trim().length === 0 ||
+      peopleInputValue.trim().length === 0
+    ) {
+      alert("Invalid input, please try again");
+    }
+    return [titleInputValue, descriptionInputValue, +peopleInputValue];
+  }
+  // submit event
+  @autoBind
   private submitHandler(e: Event) {
     e.preventDefault();
-    console.log(this.titleInputElement.value);
+    const inputValues = this.userInputValues();
+    if (Array.isArray(inputValues)) {
+      const [title, desc, people] = inputValues;
+      console.log(title, desc, people);
+    }
   }
-
+  // method to add EventListener on the form
   private configureForm() {
-    this.formElement.addEventListener("submit", this.submitHandler.bind(this));
+    this.formElement.addEventListener("submit", this.submitHandler);
   }
   // method to add form at the screen
   private attach() {
