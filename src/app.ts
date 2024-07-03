@@ -53,7 +53,7 @@ class ProjectInput {
     this.configureForm();
     this.attach();
   }
-
+  // method for take and validate values
   private userInputValues(): [string, string, number] | void {
     const titleInputValue = this.titleInputElement.value;
     const descriptionInputValue = this.descriptionInputElement.value;
@@ -65,8 +65,15 @@ class ProjectInput {
       peopleInputValue.trim().length === 0
     ) {
       alert("Invalid input, please try again");
+      return;
     }
     return [titleInputValue, descriptionInputValue, +peopleInputValue];
+  }
+  // method for the clearing fields
+  private clearFields(): void {
+    this.titleInputElement.value = "";
+    this.descriptionInputElement.value = "";
+    this.peopleInputElement.value = "";
   }
   // submit event
   @autoBind
@@ -76,6 +83,7 @@ class ProjectInput {
     if (Array.isArray(inputValues)) {
       const [title, desc, people] = inputValues;
       console.log(title, desc, people);
+      this.clearFields();
     }
   }
   // method to add EventListener on the form
